@@ -37,6 +37,7 @@ async function migrate() {
              await connection.query("ALTER TABLE users MODIFY COLUMN email VARCHAR(255) UNIQUE NOT NULL");
              await connection.query("ALTER TABLE users MODIFY COLUMN name VARCHAR(255) NOT NULL");
              await connection.query("ALTER TABLE users MODIFY COLUMN password VARCHAR(255) NOT NULL");
+             await connection.query("ALTER TABLE users MODIFY COLUMN role VARCHAR(50) DEFAULT 'user'");
         } catch (e) { console.log("Some constraints might already exist."); }
 
         const columnsToAdd = [
@@ -47,7 +48,9 @@ async function migrate() {
             ["gpa", "VARCHAR(10)"],
             ["bio", "TEXT"],
             ["last_login", "TIMESTAMP"],
-            ["created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"]
+            ["created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"],
+            ["two_factor_secret", "VARCHAR(255)"],
+            ["is_two_factor_enabled", "BOOLEAN DEFAULT FALSE"]
         ];
 
         for (const [col, type] of columnsToAdd) {

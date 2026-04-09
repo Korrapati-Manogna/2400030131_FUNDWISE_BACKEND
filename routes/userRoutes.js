@@ -9,6 +9,7 @@ router.put("/profile", verifyToken, userController.updateProfile);
 
 // Admin routes
 router.get("/", verifyToken, authorizeRoles("admin"), userController.getAllUsers);
+router.post("/", verifyToken, authorizeRoles("admin"), userController.createUser);
 router.put("/:id/role", verifyToken, authorizeRoles("admin"), userController.updateUserRole);
 router.delete("/:id", verifyToken, authorizeRoles("admin"), userController.deleteUser);
 

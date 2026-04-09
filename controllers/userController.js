@@ -1,6 +1,31 @@
 const db = require("../config/db");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
+const bcrypt = require("bcryptjs");
+
+// Admin: Create a new user (bypass OTP)
+exports.createUser = async (req, res) => {
+    const { fullName, email, password, role } = req.body;
+    try {
+        const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+        if (existing.length > 0) {
+            return res.status(400).json({ success: false, message: "User with this email already exists" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        await db.query(
+            "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+            [fullName, email, hashedPassword, role || "user"]
+        );
+
+        res.status(201).json({ success: true, message: "User created successfully" });
+    } catch (error) {
+        console.error("Error creating user:", error);
+        res.status(500).json({ success: false, message: "Error creating user" });
+    }
+};
 
 // Get current user profile
 exports.getProfile = async (req, res) => {
