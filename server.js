@@ -20,6 +20,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/scholarships", require("./routes/scholarshipRoutes"));
 app.use("/api/applications", require("./routes/applicationRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/logs", require("./routes/logRoutes"));
 app.use("/api/health", require("./routes/healthRoutes"));
 
 // Test Route
