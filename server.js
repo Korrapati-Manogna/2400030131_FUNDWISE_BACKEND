@@ -5,8 +5,21 @@ require("dotenv").config();
 
 const app = express();
 
+const allowedOrigins = [
+    "http://localhost:5173", // Vite default
+    process.env.FRONTEND_URL // Will be added in Render env vars
+].filter(Boolean);
+
 app.use(cors({
-    origin: "http://localhost:5173", // Vite default
+    origin: function (origin, callback) {
+        // console.log('Incoming Origin:', origin); // Log for debugging on Render
+        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some(o => origin.startsWith(o))) {
+            callback(null, true);
+        } else {
+            console.error('CORS blocked for origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use(express.json());
